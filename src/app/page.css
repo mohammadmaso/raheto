@@ -19,3 +19,23 @@
   font-weight: normal;
   font-style: normal;
 }
+
+body {
+  font-family: 'Alibaba', sans-serif;
+  /* Set fallback fonts in case the custom font fails to load */
+}
+
+
+.rounded-image {
+  border-radius: 50%;
+  width: 300px; /* Adjust the width as needed */
+  height: 300px; /* Adjust the height as needed */
+  object-fit: cover; /* Ensures the image covers the entire container */
+  text-align: center;
+}
+
+.centered-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
