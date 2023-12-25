@@ -133,8 +133,9 @@ const Milestones = ({ params }) => {
           {/* Mobile view */}
           {isMobile && (
             <>
-              <LineWithDot />
               <Card {...node.node} />
+              <LineWithDot />
+
             </>
           )}
 

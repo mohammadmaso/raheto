@@ -20,7 +20,6 @@ const CenteredBoxWithText = () => {
       alignItems="center"
       justifyContent="center"
       boxShadow="lg"
-      maxW={"md"}
       minW={"md"}
       textAlign="center"
       rounded={"lg"}

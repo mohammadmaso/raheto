@@ -1,10 +1,18 @@
-// 'use client'
+'use client'
 import { useState } from "react";
-import { Box, ChakraProvider, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, ChakraProvider, useColorModeValue, Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem} from "@chakra-ui/react";
 
 import HamburgerMenu from "../UI/hamburgerMenu";
 import ColorModeToggle from "../UI/colorModeToggle";
 import Link from "next/link";
+import { LuLogIn } from "react-icons/lu";
+import useAuth from "../../hooks/useAuth"
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,9 +20,24 @@ const Navbar = () => {
   const bg = useColorModeValue("gray.200", "gray.300");
   const color = useColorModeValue("black", "white");
 
+  const { isLoggedIn, user } = useAuth();
+
+  const router = useRouter()
+
+
   const closeMenu = () => {
     setIsOpen(false);
   };
+
+  const handleLogout = () => {
+    // Remove JWT token from localStorage
+    localStorage.removeItem('jwtToken');
+
+    // Refresh the page
+    location.reload();
+  };
+
+
 
   return (
       <Box
@@ -73,6 +96,37 @@ const Navbar = () => {
               همکاری
             </Link>
           </Box>
+
+          <Box
+        listStyleType="none"
+        px={{ lg: "8" }}
+        py={{ base: "3", lg: "0" }}
+      >
+        {/* Conditionally render the avatar or login/register button */}
+        {isLoggedIn ? (
+          // If user is logged in, display the avatar or placeholder
+          <Menu>
+              <MenuButton color={"transparent"} rightIcon={<ChevronDownIcon />} >
+                <Avatar
+                  name={user?.username || 'نام'}
+                  src={user?.avatar || '/placeholder-user.jpg'}
+                  size="sm"
+                  shadow="md"
+                />
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={handleLogout}>خروج</MenuItem>
+              </MenuList>
+            </Menu>
+        ) : (
+          // If user is not logged in, display the login/register button
+          <Link href="/auth/login" onClick={closeMenu}>
+            <Button width={"max-content"} colorScheme="telegram" leftIcon={<LuLogIn />}>
+              ورود/ ثبت‌نام
+            </Button>
+          </Link>
+        )}
+      </Box>
         </Box>
 
         <ColorModeToggle />
