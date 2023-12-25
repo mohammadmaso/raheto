@@ -1,5 +1,6 @@
 'use client'
-import React from 'react';
+import React,{ useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import {
   Box,
   chakra,
@@ -28,7 +29,9 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  useDisclosure
+  useDisclosure,
+  Divider,
+  Button
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { gql } from "@apollo/client";
@@ -36,6 +39,7 @@ import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown';
 import Link from 'next/link';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
+import { LuPrinter } from "react-icons/lu";
 
 const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
   map(slug: $mapSlug) {
@@ -78,12 +82,19 @@ const Milestones = ({ params }) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const isDesktop = useBreakpointValue({ base: false, md: true });
 
-
   const { loading, error, data } = useQuery(GET_MAP, {
     variables:{
       mapSlug: params.slug
     }
   });
+  const componentRef = useRef();
+      const handlePrint = useReactToPrint({
+       content: () => componentRef.current,
+       documentTitle: "نقشه راه راه‌تو",
+       onAfterPrint: () => console.log('Printed PDF successfully!'),
+      })
+
+  
 
 
   if (loading) return (
@@ -98,12 +109,16 @@ const Milestones = ({ params }) => {
   /></Box>);
     if (error) return <p>خطا: {error.message}</p>;
   
+      
 
   return (
-    <Container maxWidth="7xl" p={{ base: 2, sm: 10 }}>
+    <Container ref={componentRef} maxWidth="7xl" p={{ base: 2, sm: 10 }}>
       <chakra.h3 fontSize="4xl" fontWeight="bold" mb={18} textAlign="center">
         {data.map.title}
       </chakra.h3>
+      <Button size={"xs"} textAlign={"center"} leftIcon={<LuPrinter />} onClick={handlePrint}>دانلود نسخه چاپی</Button>
+
+      <Divider m={3}/>
       {data.map.nodes.edges.map((node) => (
         <Flex key={node.node.id} mb="10px">
           {/* Desktop view(left card) */}
@@ -259,7 +274,7 @@ const Drawer1 = ({onClose,isOpen, content, id}) =>{
         <DrawerOverlay />
         <DrawerContent>
           <DrawerBody>
-          <ReactMarkdown components={ChakraUIRenderer()} children={content} skipHtml />;
+          <ReactMarkdown components={ChakraUIRenderer()}  skipHtml >{content}</ReactMarkdown>;
 
             </DrawerBody>
         </DrawerContent>

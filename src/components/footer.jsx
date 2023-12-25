@@ -1,7 +1,7 @@
 'use client'
 
-import { Box, Button, Icon, Link as ChakraLink, Text } from "@chakra-ui/react";
-import { FaGithub, FaLinkedin, FaInstagram, FaCode } from "react-icons/fa";
+import { Box, Button, Icon, Link as ChakraLink, Text, HStack } from "@chakra-ui/react";
+import { FaGithub, FaLinkedin, FaInstagram, FaCode, FaHeart } from "react-icons/fa";
 
 import { MAX_WIDTH } from "../../config";
 
@@ -23,19 +23,15 @@ const Footer = () => {
         mx="auto"
       >
         
-        <Box py="4">
-          <Text>
-            ساخته شده با{" "}
-            <span role="img" aria-label="red heart">
-              ❤️
-            </span>
+        <Box py="3">
+          <HStack>
+            <Text>ساخته شده با{" "}</Text>
             
-              برای
-            {" "}
-            
-            یادگیری پرثمر
+            <FaHeart/>
+            <Text>برای{" "}یادگیری پرثمر</Text>
+              
            
-          </Text>
+          </HStack>
         </Box>
        
       </Box>
