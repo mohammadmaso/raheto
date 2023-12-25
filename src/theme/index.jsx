@@ -3,7 +3,7 @@ import { extendTheme } from "@chakra-ui/react";
 const styles = {
   global: {
     "html, body": {
-      fontSize: "18px",
+      fontSize: "14px",
     },
   },
 };
