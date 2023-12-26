@@ -1,6 +1,8 @@
 'use client'
 import React,{ useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
+import { FaBook, FaCheck } from 'react-icons/fa'; // You can import icons from another library
+
 import {
   Box,
   chakra,
@@ -31,7 +33,13 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Divider,
-  Button
+  Button,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Avatar,
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { gql } from "@apollo/client";
@@ -59,6 +67,7 @@ const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
               node {
                 id
                 title
+                enTitle
                 order
                 slug
                 markdownContent {
@@ -188,16 +197,18 @@ const Card = (data) => {
     <HStack
       flex={1}
       p={{ base: 3, sm: 6 }}
-      bg={useColorModeValue('gray.100', 'gray.800')}
+      bg={useColorModeValue('yellow.100', 'yellow.700')}
       spacing={5}
       rounded="lg"
       alignItems="center"
       pos="relative"
+      transition="transform 0.2s"
+        _hover={{ transform: 'scale(1.05)' }}
       _before={{
         content: `""`,
         w: '0',
         h: '0',
-        borderColor: `transparent ${useColorModeValue('#edf2f6', '#1a202c')} transparent`,
+        borderColor: `transparent ${useColorModeValue('#FEFCBF', '#975A16')} transparent`,
         borderStyle: 'solid',
         borderWidth: borderWidthValue,
         position: 'absolute',
@@ -241,13 +252,14 @@ const Lessons = ({lessons,onOpenDrawer}) => {
 
   return (
     <>
-                <Stepper mt={2} index={activeStep} orientation='vertical'  gap='4'>
+                <Stepper colorScheme='yellow' mt={2} index={activeStep} orientation='vertical'  gap='4'>
 
     {lessons.map((lesson) => (
             <Box key={lesson.node.id} onClick={() => onOpenDrawer(lesson.node)}cursor={"pointer"} >
-        <Step  >
+        <Step >
           <StepIndicator>
             <StepStatus
+              
               complete={<StepIcon />}
               incomplete={<StepNumber />}
               active={<StepNumber />}
@@ -256,7 +268,7 @@ const Lessons = ({lessons,onOpenDrawer}) => {
 
           <Box flexShrink='0'>
             <StepTitle>{lesson.node.title}</StepTitle>
-            {/* <StepDescription>{lesson.description}</StepDescription> */}
+            <StepDescription>{lesson.node.enTitle}</StepDescription>
           </Box>
 
           <StepSeparator />
@@ -276,6 +288,33 @@ const Drawer1 = ({onClose,isOpen, content, id}) =>{
   <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
+        <DrawerHeader w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
+        <DrawerCloseButton />
+
+            <Menu>
+              <MenuButton p={2} as={IconButton} size="sm"  variant="outline" colorScheme="teal">
+                {/* Circular color indicator */}
+                وضعیت مطالعه
+              </MenuButton>
+              <MenuList fontSize={"small"}>
+                <MenuItem size="2xs" >
+                  {/* Circular color indicator */}
+                  <Avatar size="2xs" name=' ' bg="red.500" marginRight={2} />
+                  <Text p="1">خوانده نشده</Text>
+                </MenuItem>
+                <MenuItem size="2xs">
+                  {/* Circular color indicator */}
+                  <Avatar size='2xs' name=' ' bg="yellow.500" marginRight={2} />
+                  <Text p="1" size="2xs">در حال خواندن</Text>
+                </MenuItem>
+                <MenuItem size="2xs">
+                  {/* Circular color indicator */}
+                  <Avatar size="2xs" name=' ' bg="green.500" marginRight={2} />
+                  <Text p="1" size="2xs">خوانده شده</Text>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </DrawerHeader>
           <DrawerBody>
           <ReactMarkdown components={ChakraUIRenderer()}  skipHtml >{content}</ReactMarkdown>;
 
@@ -312,7 +351,7 @@ const LineWithDot = () => {
           backgroundSize="cover"
           backgroundRepeat="no-repeat"
           backgroundPosition="center center"
-          bg={useColorModeValue('gray.600', 'gray.200')}
+          bg={useColorModeValue('yellow.400', 'yellow.100')}
           borderRadius="100px"
           backgroundImage="none"
           opacity={1}
