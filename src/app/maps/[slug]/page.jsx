@@ -40,6 +40,9 @@ import {
   MenuList,
   MenuItem,
   Avatar,
+  UnorderedList,
+  ListItem,
+  Circle,
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { gql } from "@apollo/client";
@@ -249,33 +252,47 @@ const Lessons = ({lessons,onOpenDrawer}) => {
     count: lessons.length,
   })
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'complete':
+        return 'green.500';
+      case 'active':
+        return 'blue.500';
+      default:
+        return 'yellow.500';
+    }
+  };
+
 
   return (
     <>
-                <Stepper colorScheme='yellow' mt={2} index={activeStep} orientation='vertical'  gap='4'>
-
-    {lessons.map((lesson) => (
-            <Box key={lesson.node.id} onClick={() => onOpenDrawer(lesson.node)}cursor={"pointer"} >
-        <Step >
-          <StepIndicator>
-            <StepStatus
-              
-              complete={<StepIcon />}
-              incomplete={<StepNumber />}
-              active={<StepNumber />}
-            />
-          </StepIndicator>
-
-          <Box flexShrink='0'>
-            <StepTitle>{lesson.node.title}</StepTitle>
-            <StepDescription>{lesson.node.enTitle}</StepDescription>
+               <UnorderedList listStyleType="none" ml={0} spacing={4}>
+      {lessons.map((lesson, index) => (
+        <ListItem
+          key={lesson.node.id}
+          display="flex"
+          alignItems="center"
+          cursor="pointer"
+          onClick={() => onOpenDrawer(lesson.node)}
+        >
+          <Circle
+            size="5"
+            bg={getStatusColor(lesson.node.status)}
+            color="white"
+            marginRight="4"
+          >
+            {/* You can put any icon or text inside the Circle component */}
+            {lesson.node.status === 'complete' ? '✓' : lesson.node.status === 'active' ? '→' : ''}
+          </Circle>
+          <Box mr={2}>
+            <Text fontSize="md" fontWeight="bold">
+              {lesson.node.title}
+            </Text>
+            <Text>{lesson.node.enTitle}</Text>
           </Box>
-
-          <StepSeparator />
-        </Step>
-        </Box>
-))}
-      </Stepper>
+        </ListItem>
+      ))}
+    </UnorderedList>
 
 </>
   )
