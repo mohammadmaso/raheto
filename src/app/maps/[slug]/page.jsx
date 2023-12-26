@@ -294,7 +294,7 @@ const Drawer1 = ({onClose,isOpen, content, id}) =>{
             <Menu>
               <MenuButton p={2} as={IconButton} size="sm"  variant="outline" colorScheme="teal">
                 {/* Circular color indicator */}
-                وضعیت مطالعه
+                وضعیت مطالعه 
               </MenuButton>
               <MenuList fontSize={"small"}>
                 <MenuItem size="2xs" >
