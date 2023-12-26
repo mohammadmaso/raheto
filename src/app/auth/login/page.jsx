@@ -88,7 +88,7 @@ const SimpleSignIn = () => {
         // You can save the token and refreshToken to the state or localStorage
         console.log('Login successful!');
         toast({
-          title: 'Login Successful',
+          title: 'ورود با موفقیت انجام شد.',
           status: 'success',
           duration: 3000,
           isClosable: true,
@@ -96,8 +96,8 @@ const SimpleSignIn = () => {
       } else {
         console.error('Login failed');
         toast({
-          title: 'Login Failed',
-          description: 'Invalid credentials. Please try again.',
+          title: 'ورود ناموفق',
+          description: 'اطلاعات ورود نادرست است.',
           status: 'error',
           duration: 3000,
           isClosable: true,

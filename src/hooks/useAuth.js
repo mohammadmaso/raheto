@@ -1,4 +1,5 @@
 // Import necessary libraries
+'use client'
 import { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { useRouter,usePathname } from 'next/navigation';

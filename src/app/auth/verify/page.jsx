@@ -75,8 +75,8 @@ const VerifySms = () => {
         // Verification successful, redirect to /auth/login
         console.log('Verification successful!');
         toast({
-          title: 'Verification Successful',
-          description: 'You can now log in.',
+          title: 'احراز هویت با موفقیت انجام شد.',
+          description: 'حالا می‌توانید وارد شوید.',
           status: 'success',
           duration: 3000,
           isClosable: true,
@@ -85,8 +85,8 @@ const VerifySms = () => {
       } else {
         console.error('Verification failed');
         toast({
-          title: 'Verification Failed',
-          description: 'Invalid verification code. Please try again.',
+          title: 'احراز هویت ناموفق',
+          description: 'کد ورود نامعتبر، لطفا مجددا تلاش نمایید.',
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -95,8 +95,8 @@ const VerifySms = () => {
     } catch (error) {
       console.error('Error during verification:', error.message);
       toast({
-        title: 'Verification Failed',
-        description: 'An error occurred during verification. Please try again.',
+        title: 'احراز هویت ناموفق',
+        description: 'خطایی رخ داده‌است، لطفا مجددا تلاش نمایید.',
         status: 'error',
         duration: 3000,
         isClosable: true,

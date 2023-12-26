@@ -40,6 +40,7 @@ import ReactMarkdown from 'react-markdown';
 import Link from 'next/link';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import { LuPrinter } from "react-icons/lu";
+import TrackLearning from "@/components/trackLearning"
 
 const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
   map(slug: $mapSlug) {
@@ -117,6 +118,7 @@ const Milestones = ({ params }) => {
         {data.map.title}
       </chakra.h3>
       <Button size={"xs"} textAlign={"center"} leftIcon={<LuPrinter />} onClick={handlePrint}>دانلود نسخه چاپی</Button>
+      <TrackLearning/>
 
       <Divider m={3}/>
       {data.map.nodes.edges.map((node) => (
@@ -271,7 +273,7 @@ const Drawer1 = ({onClose,isOpen, content, id}) =>{
 
   return (
     
-  <Drawer id={id} size={'md'} onClose={onClose} isOpen={isOpen}>
+  <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerBody>

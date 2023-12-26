@@ -62,8 +62,8 @@ const SimpleSignIn = () => {
       if (password !== confirmPassword) {
         console.error('Passwords do not match');
         toast({
-          title: 'Registration Failed',
-          description: 'Passwords do not match',
+          title: 'حطا در ساخت حساب',
+          description: 'تکرار رمزعبرو و رمز عبور یکی نیست!',
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -86,8 +86,8 @@ const SimpleSignIn = () => {
         // Registration successful, redirect to /auth/verify
         console.log('Registration successful!');
         toast({
-          title: 'Registration Successful',
-          description: 'Please verify your account',
+          title: 'حساب با موفقیت ساخته شد',
+          description: 'لطفا حساب خود را فعال نمایید.',
           status: 'success',
           duration: 3000,
           isClosable: true,
@@ -96,8 +96,8 @@ const SimpleSignIn = () => {
       } else {
         console.error('Registration failed');
         toast({
-          title: 'Registration Failed',
-          description: 'An error occurred during registration',
+          title: 'خطا در ثبت‌نام',
+          description: 'خطایی رخ داده است، لطفا مجددا تلاش نمایید.',
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -106,8 +106,8 @@ const SimpleSignIn = () => {
     } catch (error) {
       console.error('Error during registration:', error.message);
       toast({
-        title: 'Registration Failed',
-        description: 'An error occurred during registration',
+        title: 'خطا در ثبت‌نام',
+        description: 'خطایی رخ داده است، لطفا مجددا تلاش نمایید.',
         status: 'error',
         duration: 3000,
         isClosable: true,
