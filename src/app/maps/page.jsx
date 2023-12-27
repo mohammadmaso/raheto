@@ -1,15 +1,15 @@
 "use client";
-import { Box, SimpleGrid, Image, Text, Flex, Spinner } from "@chakra-ui/react";
+import { Box, SimpleGrid, Image, Text, Flex, Spinner, Badge } from "@chakra-ui/react";
 import { NextSeo } from "next-seo";
 import { useQuery } from '@apollo/client';
 import { gql } from "@apollo/client";
 import { seo } from "../../../config";
 import Link from 'next/link';
 import ContactCard from "@/components/contactCard"
+import { Tooltip, Icon } from "@chakra-ui/react";
+import { QuestionOutlineIcon } from "@chakra-ui/icons";
 
  
-
-
 const GET_ALL_MAPS = gql`
   query AllMaps(
     $offset: Int
@@ -37,6 +37,8 @@ const GET_ALL_MAPS = gql`
           title
           picture
           slug
+          isDeveloping
+          content
         }
         cursor
       }
@@ -60,15 +62,17 @@ const BlogPage = () => {
   });
 
   if (loading) return (
-  <Box  height={"80vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-  <Spinner
-  textAlign={"center"}
-  thickness='2px'
-  speed='0.65s'
-  emptyColor='gray.200'
-  color='blue.500'
-  size='md'
-/></Box>);
+    <Box  height={"80vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+      <Spinner
+        textAlign={"center"}
+        thickness='2px'
+        speed='0.65s'
+        emptyColor='gray.200'
+        color='blue.500'
+        size='md'
+      />
+    </Box>);
+  
   if (error) return <p>خطا: {error.message}</p>;
 
   const maps = data.allMaps.edges;
@@ -94,31 +98,47 @@ const BlogPage = () => {
       >
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={8}>
           {maps.map((map) => (
-              <Link key={map.node.id} href={`/maps/${map.node.slug}`} passHref>
-            <Box key={map.node.id}  borderRadius="lg" boxShadow="md" p={4} cursor="pointer"
-        transition="transform 0.2s"
-        _hover={{ transform: 'scale(1.05)' }}>
-              <Image
-                src={`https://raheto.panel.0be1.ir/media/${map.node.picture}`}
-                alt={map.node.title}
-                borderRadius="md"
-                mb={4}
-                height="200px" // Set your desired fixed height here
-                objectFit="cover"
-                width="100%"
-              />
-              <Text fontSize="xl"  mb={2}>{map.node.title}</Text>
-              {/* You can add more information or customize the card as needed */}
-            </Box>
+            <Link key={map.node.id} href={map.node.isDeveloping ? '/maps' :`/maps/${map.node.slug}`} passHref>
+              <Box
+                key={map.node.id}
+                borderRadius="lg"
+                boxShadow="md"
+                p={4}
+                // minHeight={'300px'}
+                cursor={map.node.isDeveloping ? "not-allowed" : "pointer"}
+                opacity={map.node.isDeveloping ? 0.5 : 1} // Adjust opacity for visual indication
+                transition="transform 0.2s"
+                _hover={{ transform: 'scale(1.05)' }}
+              
+              >
+                <Image
+                  src={`https://raheto.panel.0be1.ir/media/${map.node.picture}`}
+                  alt={map.node.title}
+                  borderRadius="md"
+                  mb={4}
+                  height="200px" // Set your desired fixed height here
+                  objectFit="cover"
+                  width="100%"
+                />
+                <Text fontSize="xl" mb={2}>
+          {map.node.title}
+          {map.node.content && (
+            <Tooltip p="2" label={map.node.content} rounded={"md"}  placement="auto">
+              <Icon m={1} as={QuestionOutlineIcon} ml={2} boxSize={4} color="gray.500" />
+            </Tooltip>
+          )}
+          {map.node.isDeveloping && (
+                  <Badge colorScheme="orange">در حال تدوین</Badge>
+                )}
+        </Text>
+                
+              </Box>
             </Link>
           ))}
 
           <ContactCard/>
-
-
         </SimpleGrid>
       </Box>
-      
     </>
   );
 };
