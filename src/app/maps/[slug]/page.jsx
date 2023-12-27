@@ -1,5 +1,5 @@
 'use client'
-import React,{ useRef } from 'react';
+import React,{ useRef, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { FaBook, FaCheck } from 'react-icons/fa'; // You can import icons from another library
 
@@ -43,8 +43,9 @@ import {
   UnorderedList,
   ListItem,
   Circle,
+  Image,
 } from '@chakra-ui/react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { gql } from "@apollo/client";
 import { useRouter } from 'next/navigation'
 import ReactMarkdown from 'react-markdown';
@@ -52,6 +53,21 @@ import Link from 'next/link';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import { LuPrinter } from "react-icons/lu";
 import TrackLearning from "@/components/trackLearning"
+
+
+const GET_USER_LESSONS = gql`
+query GetUserLessons($mapSlug: String!) {
+  userLessons(mapSlug: $mapSlug) {
+    userlessonstatusSet{
+      lesson{
+        id
+      }
+      status
+    }
+  }
+}
+
+`;
 
 const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
   map(slug: $mapSlug) {
@@ -65,6 +81,7 @@ const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
           title
           order
           slug
+          icon
           lessons(first: 100) {
             edges {
               node {
@@ -87,9 +104,28 @@ const GET_MAP = gql`query GetMapDetails($mapSlug: String!) {
 
 `
 
+const UPDATE_LESSON_STATUS = gql`
+mutation createUserLessonStatus($lessonId: ID!,$status:String!, $newStatus: String!) {
+  createUserLessonStatus(lessonId: $lessonId, status:$status, newStatus: $newStatus){
+    success
+}
+}
+`;
+
+
+
+
+
 
 const Milestones = ({ params }) => {
 
+  const { loading: userLessonsLoading, data: userLessonsData } = useQuery(GET_USER_LESSONS, {
+    variables: {
+      mapSlug: params.slug,
+    }
+  });
+
+  const userLessonStatuses = userLessonsData?.userLessons[0].userlessonstatusSet ;
 
 
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -122,7 +158,7 @@ const Milestones = ({ params }) => {
   /></Box>);
     if (error) return <p>خطا: {error.message}</p>;
   
-      
+  
 
   return (
     <Container ref={componentRef} maxWidth="7xl" p={{ base: 2, sm: 10 }}>
@@ -139,16 +175,15 @@ const Milestones = ({ params }) => {
           {isDesktop && node.node.order % 2 === 0 && (
             <>
               <EmptyCard />
-              <LineWithDot />
-              <Card {...node.node} />
+              
+              <Card data={node.node} userLessonStatuses={userLessonStatuses} mapSlug={params.slug} />
             </>
           )}
 
           {/* Mobile view */}
           {isMobile && (
             <>
-              <Card {...node.node} />
-              <LineWithDot />
+              <Card data={node.node} userLessonStatuses={userLessonStatuses} mapSlug={params.slug} />
 
             </>
           )}
@@ -156,9 +191,9 @@ const Milestones = ({ params }) => {
           {/* Desktop view(right card) */}
           {isDesktop && node.node.order % 2 !== 0 && (
             <>
-              <Card {...node.node} />
+              <Card data={node.node} userLessonStatuses={userLessonStatuses} mapSlug={params.slug} />
 
-              <LineWithDot />
+              {/* <LineWithDot /> */}
               <EmptyCard />
             </>
           )}
@@ -170,7 +205,20 @@ const Milestones = ({ params }) => {
 
 
 
-const Card = (data) => {
+const Card = ({data, userLessonStatuses, mapSlug}) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isDesktop = useBreakpointValue({ base: false, md: true });
+
+  const isLessonRead = (lessonId) => {
+    return userLessonStatuses?.some((e) => e.lesson.id === lessonId && e.status === 'DONE');
+  };
+
+  
+
+
+  let  areAllLessonsDone = data?.lessons?.edges && data.lessons.edges.length > 0 && data.lessons.edges.every((lesson) => isLessonRead(lesson.node.id));
+  
+
   let lessons = data.lessons.edges
   // For even id show card on left side
   // For odd id show card on right side
@@ -179,7 +227,6 @@ const Card = (data) => {
   let rightValue = isEvenId ? '-15px' : 'unset';
   let  leftValue = isEvenId ? 'unset' : '-15px';
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
   if (isMobile) {
     leftValue = '-15px';
     rightValue = 'unset';
@@ -197,6 +244,9 @@ const Card = (data) => {
 
 
   return (
+    <>
+        {isDesktop && data.order % 2 === 0 && (<LineWithDot isDone={areAllLessonsDone} />)}
+
     <HStack
       flex={1}
       p={{ base: 3, sm: 6 }}
@@ -221,12 +271,14 @@ const Card = (data) => {
       }}
     >
       <Box>
-        <VStack spacing={2} mb={3} textAlign="right">
+        <VStack spacing={2} mb={3} textAlign="right" align={"flex-start"}>
+          <HStack>
+            <Image h={"30px"} w={"30px"} src={`https://raheto.panel.0be1.ir/media/${data.icon}`}/>
           <chakra.h1 fontSize="2xl" lineHeight={1.2} fontWeight="bold" w="100%">
             {data.title}
-          </chakra.h1>
+          </chakra.h1></HStack>
           
-          <Lessons lessons={lessons} onOpenDrawer={openDrawer}/>
+          <Lessons lessons={lessons} onOpenDrawer={openDrawer} userLessonStatuses={userLessonStatuses}/>
           {/* Drawer component */}
       {selectedLesson && (
         <Drawer1
@@ -237,26 +289,39 @@ const Card = (data) => {
           isOpen={isOpen}
           content={selectedLesson.markdownContent.content}
           title={selectedLesson.title}
+          lessonId={selectedLesson.id}
+          mapSlug={mapSlug}
         />
       )}
          
         </VStack>
       </Box>
     </HStack>
+    {isDesktop && data.order % 2 !== 0 && (<LineWithDot isDone={areAllLessonsDone} />)}
+    {isMobile && (<LineWithDot isDone={areAllLessonsDone} />)}
+      </>
   );
 };
 
-const Lessons = ({lessons,onOpenDrawer}) => {
+const Lessons = ({lessons,onOpenDrawer,userLessonStatuses}) => {
   const { activeStep } = useSteps({
     index: 0,
     count: lessons.length,
   })
 
+  const isLessonRead = (lessonId) => {
+    console.log(userLessonStatuses)
+    return userLessonStatuses?.some((e) => e.lesson.id === lessonId && e.status === 'DONE');
+  };
+
+
+
+
   const getStatusColor = (status) => {
     switch (status) {
-      case 'complete':
+      case 'DONE':
         return 'green.500';
-      case 'active':
+      case 'DOING':
         return 'blue.500';
       default:
         return 'yellow.500';
@@ -276,14 +341,13 @@ const Lessons = ({lessons,onOpenDrawer}) => {
           onClick={() => onOpenDrawer(lesson.node)}
         >
           <Circle
-            size="5"
-            bg={getStatusColor(lesson.node.status)}
-            color="white"
-            marginRight="4"
-          >
-            {/* You can put any icon or text inside the Circle component */}
-            {lesson.node.status === 'complete' ? '✓' : lesson.node.status === 'active' ? '→' : ''}
-          </Circle>
+              size="5"
+              bg={isLessonRead(lesson.node.id) ? 'green.500' : "yellow.500"}
+              color="white"
+              marginRight="4"
+            >
+              {isLessonRead(lesson.node.id) ? '✓' : lesson.node.status === 'DOING' ? '→' : ''}
+            </Circle>
           <Box mr={2}>
             <Text fontSize="md" fontWeight="bold">
               {lesson.node.title}
@@ -298,49 +362,72 @@ const Lessons = ({lessons,onOpenDrawer}) => {
   )
 }
 
-const Drawer1 = ({onClose,isOpen, content, id}) =>{
+const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
+  const [updateLessonStatus] = useMutation(UPDATE_LESSON_STATUS,{
+    refetchQueries: [{ query: GET_USER_LESSONS, variables: {
+      mapSlug: mapSlug
+    } }],
+  });
+
+  const handleStatusChange = async (newStatus) => {
+    try {
+      // Call the mutation to update the lesson status
+      await updateLessonStatus({
+        variables: {
+          lessonId,
+          status:"not",
+          newStatus,
+        },
+      });
+      // You can add any additional logic after the status is updated
+    } catch (error) {
+      console.error('Error updating lesson status:', error.message);
+    }
+  };
 
   return (
-    
-  <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
-        <DrawerContent>
-        <DrawerHeader w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
+    <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
+    <DrawerOverlay />
+    <DrawerContent>
+      <DrawerHeader w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
         <DrawerCloseButton />
+        <Menu>
+          <MenuButton p={2} as={IconButton} size="sm" variant="outline" colorScheme="teal">
+            {/* Circular color indicator */}
+            وضعیت مطالعه
+          </MenuButton>
+          <MenuList fontSize={"small"}>
+            <MenuItem size="2xs" onClick={() => handleStatusChange('not')}>
+              {/* Circular color indicator */}
+              <Avatar size="2xs" name=' ' bg="red.500" marginRight={2} />
+              <Text p="1">خوانده نشده</Text>
+            </MenuItem>
+            <MenuItem size="2xs" onClick={() => handleStatusChange('doing')}>
+              {/* Circular color indicator */}
+              <Avatar size='2xs' name=' ' bg="yellow.500" marginRight={2} />
+              <Text p="1" size="2xs">در حال خواندن</Text>
+            </MenuItem>
+            <MenuItem size="2xs" onClick={() => handleStatusChange('done')}>
+              {/* Circular color indicator */}
+              <Avatar size="2xs" name=' ' bg="green.500" marginRight={2} />
+              <Text p="1" size="2xs">خوانده شده</Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </DrawerHeader>
+        <DrawerBody>
+          <ReactMarkdown components={ChakraUIRenderer()}  skipHtml >{content}</ReactMarkdown>
+          </DrawerBody>
+          </DrawerContent>
+    </Drawer>
+  );
+};
 
-            <Menu>
-              <MenuButton p={2} as={IconButton} size="sm"  variant="outline" colorScheme="teal">
-                {/* Circular color indicator */}
-                وضعیت مطالعه 
-              </MenuButton>
-              <MenuList fontSize={"small"}>
-                <MenuItem size="2xs" >
-                  {/* Circular color indicator */}
-                  <Avatar size="2xs" name=' ' bg="red.500" marginRight={2} />
-                  <Text p="1">خوانده نشده</Text>
-                </MenuItem>
-                <MenuItem size="2xs">
-                  {/* Circular color indicator */}
-                  <Avatar size='2xs' name=' ' bg="yellow.500" marginRight={2} />
-                  <Text p="1" size="2xs">در حال خواندن</Text>
-                </MenuItem>
-                <MenuItem size="2xs">
-                  {/* Circular color indicator */}
-                  <Avatar size="2xs" name=' ' bg="green.500" marginRight={2} />
-                  <Text p="1" size="2xs">خوانده شده</Text>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </DrawerHeader>
-          <DrawerBody>
-          <ReactMarkdown components={ChakraUIRenderer()}  skipHtml >{content}</ReactMarkdown>;
 
-            </DrawerBody>
-        </DrawerContent>
-      </Drawer>)
-}
+const LineWithDot = ({ isDone }) => {
+  const dotColor = isDone ? 'green.500' : 'yellow.500';
+  const iconColor = isDone ? 'white' : 'gray.700';
 
-const LineWithDot = () => {
   return (
     <Flex
       pos="relative"
@@ -357,7 +444,7 @@ const LineWithDot = () => {
         top="0px"
       ></chakra.span>
       <Box pos="relative" p="20px">
-        <Box
+        <Circle
           pos="absolute"
           top="0"
           left="0"
@@ -368,15 +455,27 @@ const LineWithDot = () => {
           backgroundSize="cover"
           backgroundRepeat="no-repeat"
           backgroundPosition="center center"
-          bg={useColorModeValue('yellow.400', 'yellow.100')}
-          borderRadius="100px"
+          bg={dotColor}
+          borderRadius="50%" 
           backgroundImage="none"
           opacity={1}
-        ></Box>
+        >
+          {isDone && (
+            <FaCheck
+              color={iconColor}
+              fontSize="16px"
+              position="absolute"
+              top="50%" 
+              left="50%" 
+              // transform="translate(-50%, -50%)" 
+            />
+          )}
+        </Circle>
       </Box>
     </Flex>
   );
 };
+
 
 const EmptyCard = () => {
   return <Box flex={{ base: 0, md: 1 }} p={{ base: 0, md: 6 }} bg="transparent"></Box>;
