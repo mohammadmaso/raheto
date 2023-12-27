@@ -7,6 +7,9 @@ import { seo } from "../../../config";
 import Link from 'next/link';
 import ContactCard from "@/components/contactCard"
 
+ 
+
+
 const GET_ALL_MAPS = gql`
   query AllMaps(
     $offset: Int

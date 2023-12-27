@@ -12,6 +12,12 @@ import NextImage from "next/image";
 
 import { seo, data } from "../../config";
 
+ 
+const metadata = {
+  title: 'راه تو |‌ یادگیری با نقشه‌راه',
+}
+
+
 const Home = () => {
   const color = useColorModeValue("telegram.500", "telegram.400");
   const isOdd = (num) => num % 2;
@@ -38,6 +44,7 @@ const Home = () => {
           ],
         }}
       />
+     
 
       <Box
         as="section"

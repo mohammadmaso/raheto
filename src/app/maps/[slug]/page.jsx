@@ -53,6 +53,7 @@ import Link from 'next/link';
 import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import { LuPrinter } from "react-icons/lu";
 import TrackLearning from "@/components/trackLearning"
+import DashedLineWithText from "@/components/dashedLine"
 
 
 const GET_USER_LESSONS = gql`
@@ -148,6 +149,8 @@ const Milestones = ({ params }) => {
 
   if (loading) return (
     <Box  height={"80vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
+        {/* <title>{`${data.map.title} راه‌تو | نقشه‌راه یادگیری`}</title> */}
+
     <Spinner
     textAlign={"center"}
     thickness='2px'
@@ -184,7 +187,6 @@ const Milestones = ({ params }) => {
           {isMobile && (
             <>
               <Card data={node.node} userLessonStatuses={userLessonStatuses} mapSlug={params.slug} />
-
             </>
           )}
 
@@ -192,13 +194,13 @@ const Milestones = ({ params }) => {
           {isDesktop && node.node.order % 2 !== 0 && (
             <>
               <Card data={node.node} userLessonStatuses={userLessonStatuses} mapSlug={params.slug} />
-
               {/* <LineWithDot /> */}
               <EmptyCard />
             </>
           )}
         </Flex>
       ))}
+      <DashedLineWithText/>
     </Container>
   );
 };
@@ -389,7 +391,7 @@ const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
     <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
     <DrawerOverlay />
     <DrawerContent>
-      <DrawerHeader w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
+      <DrawerHeader shadow={"md"} w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
         <DrawerCloseButton />
         <Menu>
           <MenuButton p={2} as={IconButton} size="sm" variant="outline" colorScheme="teal">
