@@ -8,6 +8,8 @@ import Link from 'next/link';
 import ContactCard from "@/components/contactCard"
 import { Tooltip, Icon } from "@chakra-ui/react";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
+import Category from "@/components/categories"
+import { useEffect, useState } from 'react';
 
  
 const GET_ALL_MAPS = gql`
@@ -20,6 +22,7 @@ const GET_ALL_MAPS = gql`
     $title: String
     $title_Icontains: String
     $title_Istartswith: String
+    $category_TitleEn:String
   ) {
     allMaps(
       offset: $offset
@@ -30,6 +33,7 @@ const GET_ALL_MAPS = gql`
       title: $title
       title_Icontains: $title_Icontains
       title_Istartswith: $title_Istartswith
+      category_TitleEn:$category_TitleEn
     ) {
       edges {
         node {
@@ -50,16 +54,26 @@ const GET_ALL_MAPS = gql`
   }
 `;
 
-const BlogPage = () => {
+const BlogPage = ({categoryTitle}) => {
   const title = "Blog";
   const description = seo.description;
   const url = `${seo.canonical}blog`;
 
-  const { loading, error, data } = useQuery(GET_ALL_MAPS, {
+  const { loading, error, data, refetch } = useQuery(GET_ALL_MAPS, {
     variables: {
-      first: 10,
+      category_TitleEn: categoryTitle,
     },
+    
   });
+
+    // Use useEffect to refetch the query when categoryTitle changes
+    useEffect(() => {
+      // Call the refetch function to fetch data with the updated categoryTitle
+      refetch({
+        category_TitleEn: categoryTitle,
+      });
+    }, [categoryTitle]);
+  
 
   if (loading) return (
     <Box  height={"80vh"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
@@ -96,6 +110,7 @@ const BlogPage = () => {
         py="4"
         minH={"80vh"}
       >
+        <Category/>
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={8}>
           {maps.map((map) => (
             
