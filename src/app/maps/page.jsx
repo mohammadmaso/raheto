@@ -98,7 +98,7 @@ const BlogPage = () => {
       >
         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={8}>
           {maps.map((map) => (
-            <Link key={map.node.id} href={map.node.isDeveloping ? '/maps' :`/maps/${map.node.slug}`} passHref>
+            
               <Box
                 key={map.node.id}
                 borderRadius="lg"
@@ -121,7 +121,10 @@ const BlogPage = () => {
                   width="100%"
                 />
                 <Text fontSize="xl" mb={2}>
+                <Link key={map.node.id} href={map.node.isDeveloping ? '/maps' :`/maps/${map.node.slug}`} passHref>  
           {map.node.title}
+          </Link>
+
           {map.node.content && (
             <Tooltip p="2" label={map.node.content} rounded={"md"}  placement="auto">
               <Icon m={1} as={QuestionOutlineIcon} ml={2} boxSize={4} color="gray.500" />
@@ -133,7 +136,6 @@ const BlogPage = () => {
         </Text>
                 
               </Box>
-            </Link>
           ))}
 
           <ContactCard/>
