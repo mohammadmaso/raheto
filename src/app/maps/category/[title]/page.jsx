@@ -1,6 +1,6 @@
 "use client";
 
-import BlogPost from '../../page'
+import MapList from '@/components/maps'
 import { useRouter, usePathname } from 'next/navigation'
 
 
@@ -12,7 +12,7 @@ const CategoryPage = () => {
 
     console.log(pathname)
     return (
-        <BlogPost categoryTitle={lastPart}/>
+        <MapList categoryTitle={lastPart}/>
     )
 }
 

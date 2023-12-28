@@ -3,7 +3,7 @@ import { Box, SimpleGrid, Image, Text, Flex, Spinner, Badge } from "@chakra-ui/r
 import { NextSeo } from "next-seo";
 import { useQuery } from '@apollo/client';
 import { gql } from "@apollo/client";
-import { seo } from "../../../config";
+import { seo } from "../../config";
 import Link from 'next/link';
 import ContactCard from "@/components/contactCard"
 import { Tooltip, Icon } from "@chakra-ui/react";
@@ -54,7 +54,7 @@ const GET_ALL_MAPS = gql`
   }
 `;
 
-const BlogPage = () => {
+const MapList = ({categoryTitle}) => {
   const title = "Blog";
   const description = seo.description;
   const url = `${seo.canonical}blog`;
@@ -160,4 +160,4 @@ const BlogPage = () => {
   );
 };
 
-export default BlogPage;
+export default MapList;
