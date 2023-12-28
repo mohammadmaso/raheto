@@ -59,20 +59,15 @@ const BlogPage = () => {
   const description = seo.description;
   const url = `${seo.canonical}blog`;
 
-  const { loading, error, data, refetch } = useQuery(GET_ALL_MAPS, {
-    variables: {
-      category_TitleEn: categoryTitle,
-    },
-    
-  });
+  const { loading, error, data, refetch } = useQuery(GET_ALL_MAPS);
 
-    // Use useEffect to refetch the query when categoryTitle changes
-    useEffect(() => {
-      // Call the refetch function to fetch data with the updated categoryTitle
-      refetch({
-        category_TitleEn: categoryTitle,
-      });
-    }, [categoryTitle]);
+    // // Use useEffect to refetch the query when categoryTitle changes
+    // useEffect(() => {
+    //   // Call the refetch function to fetch data with the updated categoryTitle
+    //   refetch({
+    //     category_TitleEn: categoryTitle,
+    //   });
+    // }, [categoryTitle]);
   
 
   if (loading) return (
