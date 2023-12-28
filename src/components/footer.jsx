@@ -4,9 +4,10 @@ import { Box, Button, Icon, Link as ChakraLink, Text, HStack } from "@chakra-ui/
 import { FaGithub, FaLinkedin, FaInstagram, FaCode, FaHeart } from "react-icons/fa";
 
 import { MAX_WIDTH } from "../../config";
+import Link from "next/link";
 
 // Fell free to add your social media accounts!
-
+let versionNumber = "۰.۰.۱"
 
 const Footer = () => {
   return (
@@ -23,7 +24,7 @@ const Footer = () => {
         mx="auto"
       >
         
-        <Box py="3">
+        <Box pt="3">
           <HStack>
             <Text>ساخته شده با{" "}</Text>
             
@@ -33,6 +34,8 @@ const Footer = () => {
            
           </HStack>
         </Box>
+        <Link href={"https://github.com/mohammadmaso/raheto"} passHref>
+        <Text>نسخه {versionNumber}</Text></Link>
        
       </Box>
     </Box>

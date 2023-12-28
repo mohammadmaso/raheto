@@ -54,7 +54,7 @@ const Home = () => {
         textAlign="center"
         justifyContent={"center"}
         py="4"
-        minH={"80vh"}
+        minH={"85vh"}
         className="centered-image-container"
       >
         <Image
