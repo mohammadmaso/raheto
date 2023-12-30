@@ -14,6 +14,8 @@ export default function RootLayout({
   return (
     <html lang='fa' dir='rtl' >
       <head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+
       <title>راه‌تو | یادگیری با نقشه‌راه</title></head>
         
 
