@@ -1,5 +1,5 @@
 'use client'
-import React,{ useRef, useEffect } from 'react';
+import React,{ useRef, useEffect, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { FaBook, FaCheck } from 'react-icons/fa'; // You can import icons from another library
 
@@ -44,6 +44,7 @@ import {
   ListItem,
   Circle,
   Image,
+  theme,
 } from '@chakra-ui/react';
 import { useQuery, useMutation } from '@apollo/client';
 import { gql } from "@apollo/client";
@@ -120,7 +121,7 @@ mutation createUserLessonStatus($lessonId: ID!,$status:String!, $newStatus: Stri
 
 const Milestones = ({ params }) => {
 
-  const { loading: userLessonsLoading, data: userLessonsData } = useQuery(GET_USER_LESSONS, {
+  const { loading: userLessonsLoading, data: userLessonsData, refetch } = useQuery(GET_USER_LESSONS, {
     variables: {
       mapSlug: params.slug,
     }
@@ -212,7 +213,12 @@ const Card = ({data, userLessonStatuses, mapSlug}) => {
   const isDesktop = useBreakpointValue({ base: false, md: true });
 
   const isLessonRead = (lessonId) => {
-    return userLessonStatuses?.some((e) => e.lesson.id === lessonId && e.status === 'DONE');
+    return (
+      userLessonStatuses &&
+      userLessonStatuses.some(
+        (e) => e.lesson.id === lessonId && e.status === 'DONE'
+      )
+    );
   };
 
   
@@ -242,6 +248,7 @@ const Card = ({data, userLessonStatuses, mapSlug}) => {
     setSelectedLesson(lesson);
     onOpen();
   };
+
 
 
 
@@ -312,10 +319,13 @@ const Lessons = ({lessons,onOpenDrawer,userLessonStatuses}) => {
   })
 
   const isLessonRead = (lessonId) => {
-    console.log(userLessonStatuses)
-    return userLessonStatuses?.some((e) => e.lesson.id === lessonId && e.status === 'DONE');
+    return (
+      userLessonStatuses &&
+      userLessonStatuses.some(
+        (e) => e.lesson.id === lessonId && e.status === 'DONE'
+      )
+    );
   };
-
 
 
 
@@ -365,6 +375,8 @@ const Lessons = ({lessons,onOpenDrawer,userLessonStatuses}) => {
 }
 
 const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
+  const [forceRender, setForceRender] = useState(0);
+
   const [updateLessonStatus] = useMutation(UPDATE_LESSON_STATUS,{
     refetchQueries: [{ query: GET_USER_LESSONS, variables: {
       mapSlug: mapSlug
@@ -381,6 +393,8 @@ const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
           newStatus,
         },
       });
+      await refetch();
+      setForceRender((prev) => prev + 1);
       // You can add any additional logic after the status is updated
     } catch (error) {
       console.error('Error updating lesson status:', error.message);
@@ -388,7 +402,7 @@ const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
   };
 
   return (
-    <Drawer id={id}  onClose={onClose} isOpen={isOpen}>
+    <Drawer id={id}  onClose={onClose} isOpen={isOpen} size={{base: "xs", md:"md", lg:"lg"}}>
     <DrawerOverlay />
     <DrawerContent>
       <DrawerHeader shadow={"md"} w="100%" display={"flex"} justifyContent={"flex-end"} alignItems={"center"}>
