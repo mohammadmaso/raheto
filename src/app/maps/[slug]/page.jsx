@@ -393,7 +393,7 @@ const Drawer1 = ({ onClose, isOpen, content, id, lessonId, mapSlug }) => {
           newStatus,
         },
       });
-      await refetch();
+      
       setForceRender((prev) => prev + 1);
       // You can add any additional logic after the status is updated
     } catch (error) {

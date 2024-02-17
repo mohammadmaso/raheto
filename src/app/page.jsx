@@ -58,24 +58,25 @@ const Home = () => {
         className="centered-image-container"
       >
         <Image
-          src="/location-symbols-road-with-mountains_23-2149764141.jpg"
+          src="/7606000.jpg"
         mb={3}
+        w="400px"
           alt="avatar bigheads"
           placeholder="blur"
           blurDataURL="L5I~of#i004mgjw]-4XA00?wL#xu"
           priority
-          className="rounded-image"
+          // className="rounded-image"
         />
         <Box>
           
           <Heading fontSize={["3xl", "4xl"]} fontWeight="700">
             <Text as="span" color={color}>
-              یادگیری به روش
+             کشف مسیرشغلی،
             </Text>{" "}
-            نقشه‌راه‌های تعاملی
+            مسیری برای شاد زیستن
           </Heading>
           <Text py="4">
-            روش نوین یادگیری، منابع متعدد و قابل اعتماد، نظم ذهنی در هنگام یادگیری
+            روش نوین رغبت سنجی شغلی، بانک جامع اطلاعات مشاغل و مشاروه‌ی شغلی
           </Text>
           
         </Box>

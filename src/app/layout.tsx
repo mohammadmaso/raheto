@@ -14,10 +14,10 @@ export default function RootLayout({
     <html lang='fa' dir='rtl' >
       <head>
       <link rel="icon" href="/favicon.ico" sizes="any" />
-      <title>راه‌تو | یادگیری با نقشه‌راه</title></head>
+      <title>راه‌تو | راهنمای مسیر‌شغلی</title></head>
       <body>
       <Providers>
-      <Header /><Box as="main" px={[4, 6, 10, 14, 20]} maxW={MAX_WIDTH} mx="auto">
+      <Header /><Box as="main" px={[4, 6, 10, 14, 20]} minH={"80vh"} maxW={MAX_WIDTH} mx="auto">
       {children}
       </Box>
       <Footer />

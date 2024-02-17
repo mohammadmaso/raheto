@@ -67,7 +67,7 @@ const Navbar = () => {
           boxShadow={{ base: "xl", lg: "none" }}
           zIndex="2"
         >
-          <Box
+          {/* <Box
             listStyleType="none"
             px={{ lg: "8" }}
             py={{ base: "3", lg: "0" }}
@@ -75,15 +75,15 @@ const Navbar = () => {
             <Link href="/" onClick={closeMenu}>
               خانه
             </Link>
-          </Box>
+          </Box> */}
 
           <Box
             listStyleType="none"
             px={{ lg: "8" }}
             py={{ base: "3", lg: "0" }}
           >
-            <Link href="/maps" onClick={closeMenu}>
-              نقشه‌راه‌ها
+            <Link href="/occupations" onClick={closeMenu}>
+              بانک مشاغل
             </Link>
           </Box>
 
@@ -92,8 +92,8 @@ const Navbar = () => {
             px={{ lg: "8" }}
             py={{ base: "3", lg: "0" }}
           >
-            <Link href="/contact" onClick={closeMenu}>
-              همکاری
+            <Link href="/profiler" onClick={closeMenu}>
+              تست مسیرشغلی
             </Link>
           </Box>
 
@@ -115,6 +115,8 @@ const Navbar = () => {
                 />
               </MenuButton>
               <MenuList>
+                <Link href="/profiler/result">
+                <MenuItem>آخرین نتیجه تست</MenuItem></Link>
                 <MenuItem onClick={handleLogout}>خروج</MenuItem>
               </MenuList>
             </Menu>

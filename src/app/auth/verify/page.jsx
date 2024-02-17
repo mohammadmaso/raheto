@@ -110,14 +110,15 @@ const VerifySms = () => {
 
       const { data } = await resendSms({
         variables: {
-          resendSmsPhoneNumber: phoneNumber,
+          resendVerificationSmsPhoneNumber: phoneNumber,
         },
       });
 
-      const success = data?.resendSms?.success;
+      const success = data?.resendVerificationSms?.success;
 
       if (success) {
         console.log('Resend SMS successful!');
+        setCountdown(60)
         toast({
           title: 'Resend SMS Successful',
           description: 'SMS has been resent. Please check your phone.',
