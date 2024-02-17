@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: 'http://127.0.0.1:8000/graphql/',
+  uri: 'https://raheto.panel.0be1.ir/api/',
 });
 
 const authLink = setContext((_, { headers }) => {
