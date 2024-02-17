@@ -11,7 +11,7 @@ import Interests from "../../../components/interests";
 import { gql } from "@apollo/client";
 import Link from "next/link";
 
-export const AllTestResultsQuery = gql`
+const AllTestResultsQuery = gql`
   query AllTestResults {
     me {
       surveyresultSet {

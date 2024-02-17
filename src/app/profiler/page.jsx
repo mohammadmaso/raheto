@@ -232,7 +232,7 @@ const SurveyPage = ({ onSubmit }) => {
                 <Td  style={{ wordBreak: 'break-word', width: '100px', overflowWrap: 'break-word' }}>{question.node.text}</Td>
 
                 {Array.from({ length: 5 }, (_, index) => (
-                    <Td textAlign={"center"} >
+                    <Td key={index}>
 
                     <label key={index}>
                     <input
